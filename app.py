@@ -26,6 +26,7 @@ import config
 app = Flask(__name__, template_folder='templates', static_folder='static')
 moment = Moment(app)
 app.config.from_object('config')
+db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 db.init_app(app)
 #----------------------------------------------------------------------------#
