@@ -1,18 +1,66 @@
-name: Docker Image CI
+# name: Docker Image CI
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+
+#   build:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Build the Docker image
+#       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+   push:
+     branches: [ "main" ]
+   pull_request:
+     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: mydatabase
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: 1234
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and test
+      run: |
+        docker-compose up -d --build
+        docker-compose exec app pytest
+      working-directory: ./
+
+    - name: Push to Docker Hub
+      if: success()
+      run: |
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+        # Tag the images with the Docker Hub repository name
+        docker tag FYYUR-ARTIST-APP-samo:latest $DOCKER_USERNAME/FYYUR-ARTIST-APP-samo:latest
+        docker tag postgres:latest $DOCKER_USERNAME/postgres:latest
+
+        # Push the tagged images to Docker Hub
+        docker push $DOCKER_USERNAME/FYYUR-ARTIST-APP-samo:latest
+        docker push $DOCKER_USERNAME/postgres:latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
