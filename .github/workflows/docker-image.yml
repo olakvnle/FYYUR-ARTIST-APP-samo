@@ -31,7 +31,7 @@ jobs:
 
     services:
       app:
-        image: FYYUR-ARTIST-APP-samo
+        image: fyyur-artist-app-samo
         ports:
           - "5000:5000"
       postgres:
