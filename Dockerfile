@@ -17,7 +17,7 @@ ENV POSTGRES_USER=myuser
 ENV POSTGRES_PASSWORD=1234
 ENV POSTGRES_DB=mydatabase
 ENV POSTGRES_HOST=postgres
-ENV POSTGRES_PORT=5432
+ENV POSTGRES_PORT=5433
 
 CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 #ENTRYPOINT ["python3", "app.py"]
