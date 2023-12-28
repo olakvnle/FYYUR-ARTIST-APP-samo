@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres
         ports:
-          - "5432:5432"
+          - "5433:5432"
         env:
           POSTGRES_DB: mydatabase
           POSTGRES_USER: myuser
