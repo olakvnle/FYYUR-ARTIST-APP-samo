@@ -30,6 +30,10 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      app:
+        image: FYYUR-ARTIST-APP-samo
+        ports:
+          - "5000:5000"
       postgres:
         image: postgres
         ports:
